@@ -3,6 +3,7 @@ gevent.monkey.patch_socket()
 gevent.monkey.patch_ssl()
 
 import os
+import re
 import logging
 from time import time
 from steam.enums import EResult, EPersonaState
@@ -394,7 +395,7 @@ class CachingCDNClient(CDNClient):
         # attempt properly parse manifest_gid
         manifest_gid = manifest_gid_raw
         gid_pattern = re.compile(r"'gid':\s*'(\d+)")
-        match = gid_pattern.search(manifest_gid_raw)
+        match = gid_pattern.search(str(manifest_gid_raw))
         if match:
             manifest_gid = match.group(1)
 
