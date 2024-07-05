@@ -390,7 +390,14 @@ class CachingCDNClient(CDNClient):
                 self._LOG.debug("Found cached manifest, but encountered error or file is empty")
                 cached_manifest.remove()
 
-    def get_manifest(self, app_id, depot_id, manifest_gid, decrypt=True, manifest_request_code=None):
+    def get_manifest(self, app_id, depot_id, manifest_gid_raw, decrypt=True, manifest_request_code=None):
+        # attempt properly parse manifest_gid
+        manifest_gid = manifest_gid_raw
+        gid_pattern = re.compile(r"'gid':\s*'(\d+)'")
+        match = gid_pattern.search(manifest_gid_raw)
+        if match:
+            manifest_gid = match.group(1)
+
         key = (app_id, depot_id, manifest_gid)
         cached_manifest = UserCacheFile("manifests/{}_{}_{}".format(*key))
 
